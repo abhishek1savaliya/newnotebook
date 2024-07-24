@@ -2,32 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+loading {
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 12;
+  position: fixed;
+  --gradient-lavender: #d300c5;
+  --gradient-orange: #ff7a00;
+  --gradient-pink: #ff0169;
+  --gradient-purple: #7638fa;
+  --gradient-yellow: #ffd600;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
+loading {
+  animation: 2s linear infinite RefreshedLoadingBarProgress,
+    0.5s ease-out LoadingBarEnter;
   background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    to right,
+    var(--gradient-yellow),
+    var(--gradient-orange),
+    var(--gradient-pink),
+    var(--gradient-lavender),
+    var(--gradient-purple),
+    var(--gradient-yellow)
+  );
+  background-size: 500%;
+  height: 6px;
+  transform-origin: left;
+  width: 100%;
+}
+@keyframes RefreshedLoadingBarProgress {
+  0% {
+    background-position: 125% 0;
+  }
+  100% {
+    background-position: 0% 0;
+  }
+}
+@keyframes LoadingBarEnter {
+  0% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.animate-shake {
+  animation: shake 0.3s;
 }
