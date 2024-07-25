@@ -45,12 +45,12 @@ const Page = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post('https://anotebookbackend.onrender.com/api/auth/login', {
+      const response = await axios.post('https://confidentialnotes.onrender.com/api/auth/login', {
         email,
         password
       });
       if (response.data.authToken) {
-        localStorage.setItem('authToken', response.data.authToken);
+        localStorage.setItem('token', response.data.authToken);
         router.push('/');
       }
     } catch (error) {
