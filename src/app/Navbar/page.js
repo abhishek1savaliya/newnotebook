@@ -42,7 +42,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="bg-sky-600 p-4 flex justify-between items-center">
+    <nav className="bg-sky-600 p-4 flex  justify-between items-center">
       <Link href="/" className="text-white text-lg font-semibold">
         Confidential
       </Link>

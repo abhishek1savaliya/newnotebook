@@ -15,13 +15,10 @@ const NotesPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedTag, setSelectedTag] = useState('');
-  const [tag, setTag] = useState({
-    loading: []
-  })
+  const [tag, setTag] = useState({ available_tag: [] });
 
   useEffect(() => {
     const fetchNotes = async () => {
-      
       if (!localStorage.getItem('token')) {
         router.push('/login');
         return;
@@ -85,25 +82,39 @@ const NotesPage = () => {
     setSelectedTag('');
   };
 
+  const backgroundColors = [
+    'bg-gray-50',
+    'bg-blue-50',
+    'bg-green-50',
+    'bg-yellow-50',
+    'bg-red-50',
+    'bg-purple-50',
+    'bg-pink-50',
+    'bg-teal-50'
+  ];
+
+  const getRandomBackgroundColor = () => {
+    const randomIndex = Math.floor(Math.random() * backgroundColors.length);
+    return backgroundColors[randomIndex];
+  };
+
+
+
   return (
     <>
-      {loading && (
-
-        <Loader />
-      )}
-      <div className="relative  p-2">
-
+      {loading && <Loader />}
+      <div className="relative p-4 md:p-6 lg:p-8">
         <button
-          className="mb-6 px-4 py-2 mt-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600"
+          className="mb-6 px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600"
         >
           <Link href='/addnote'>Add Note</Link>
         </button>
-        <div className="mb-4 flex items-center space-x-4">
-          <span>Filter:</span>
+        <div className="mb-4 flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
+          <span className="text-lg font-medium">Filter:</span>
           <select
             value={selectedTag}
             onChange={handleTagChange}
-            className="px-4 py-2 border rounded-lg"
+            className="px-4 py-2 border rounded-lg flex-grow"
           >
             <option value="">Select a tag</option>
             {Object.entries(tag).map(([category, tags]) => (
@@ -125,66 +136,72 @@ const NotesPage = () => {
         </div>
         {error && <div className="text-red-600">{error}</div>}
         {notes.length === 0 ? (
-
           <div className='text-center'>
             {loading ? (
-              <div><Pencilloader /></div>
+              <Pencilloader />
             ) : (
               <div>No notes available</div>
             )}
           </div>
-
         ) : (
           <>
-
             {loading ? (
-              <div><Pencilloader /></div>
+              <Pencilloader />
             ) : (
-              <div> <h1 className="text-center text-2xl font-bold mb-4">All notes</h1>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-
+              <div>
+                <h1 className="text-center text-2xl font-bold mb-4">All notes</h1>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
                   {notes.map(note => {
-                    const emoji = note.tag.match(/[\p{Emoji}]/u);
+                    // Extract emojis from the tag
+                    const emojis = note.tag.match(/[\p{Emoji}]/gu) || [];
+
+                    // Set the background color; you can adjust or add more Tailwind colors here
+                    const backgroundColor = note.color || 'bg-gray-50';
+
                     return (
                       <div
                         key={note.id}
-                        className={`p-4 border rounded-md shadow-sm relative ${note.color || 'bg-gray-50'}`}
+                        className={`w-64 h-64 p-4 border rounded-md shadow-sm relative ${backgroundColor} overflow-auto`} // Added overflow-auto
                       >
-                        {emoji && (
+                        {emojis.length > 0 && (
                           <span className="absolute top-2 right-2 text-2xl">
-                            {emoji[0]}
+                            {emojis[0]} {/* Display the first emoji */}
                           </span>
                         )}
-                        <h2 className="text-xl font-semibold mb-2">{note.title}</h2>
-                        <p className="text-gray-700 mb-2">{note.description}</p>
-                        <p className="text-sm text-gray-400 mb-4">
-                          Date: {moment(note.date).tz('Asia/Kolkata').format('DD/MM/YYYY hh:mm A')}
-                        </p>
-                        <div className="flex justify-end space-x-2">
-                          <button
-                            className="px-3 py-1 text-teal-700"
-                          >
-                            <Link href={`/editnote/${note.id}`}>
-                              <FaRegEdit className="text-lg" />
-                            </Link>
-                          </button>
-                          <button
-                            className="px-3 py-1 text-red-700"
-                            onClick={() => handleDelete(note.id)}
-                          >
-                            <RiDeleteBin6Line />
-                          </button>
+                        <h2 className="text-xl font-bold text-blue-800 mb-2 truncate">{note.title}</h2> {/* Title color */}
+                        <p className="text-gray-800 mb-2 max-w-full break-words">{note.description}</p> {/* Break long words and wrap text */}
+
+                        <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-sm text-gray-500">
+                          <p className="flex-1 truncate">
+                            {moment(note.date).tz('Asia/Kolkata').format('DD/MM/YYYY hh:mm A')}
+                          </p>
+                          <div className="flex space-x-2">
+                            <button
+                              className="px-3 py-1 text-teal-700 hover:text-teal-900 transition-colors"
+                            >
+                              <Link href={`/editnote/${note.id}`}>
+                                <FaRegEdit className="text-lg" />
+                              </Link>
+                            </button>
+                            <button
+                              className="px-3 py-1 text-red-700 hover:text-red-900 transition-colors"
+                              onClick={() => handleDelete(note.id)}
+                            >
+                              <RiDeleteBin6Line />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     );
                   })}
-                </div></div>
+
+
+                </div>
+              </div>
             )}
-
-
           </>
         )}
-      </div >
+      </div>
     </>
   );
 };

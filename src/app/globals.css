@@ -192,8 +192,8 @@
 loading {
   left: 0;
   right: 0;
+  position: absolute;
   z-index: 12;
-  position: fixed;
   --gradient-lavender: #d300c5;
   --gradient-orange: #ff7a00;
   --gradient-pink: #ff0169;
