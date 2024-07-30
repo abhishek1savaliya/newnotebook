@@ -55,7 +55,8 @@ const NotesPage = () => {
         },
       });
 
-      setNotes(prevNotes => prevNotes.filter(note => note._id !== noteId));
+      setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId));
+
     } catch (err) {
       console.log(err);
       setError('Failed to delete the note. Please try again.');
@@ -95,9 +96,8 @@ const NotesPage = () => {
               <div className="flex justify-end space-x-2">
                 <button
                   className="px-3 py-1 text-teal-700"
-                  onClick={() => handleEdit(note._id)}
-                >
-                  <FaRegEdit className="text-lg" />
+                >   <Link href={`/editnote/${note.id}`}>  <FaRegEdit className="text-lg" /></Link>
+
                 </button>
                 <button
                   className="px-3 py-1 text-red-700"
