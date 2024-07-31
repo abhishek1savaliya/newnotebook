@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import moment from 'moment';
 import { useRouter } from 'next/navigation';
 import { TAGS } from '@/utils/page';
 import Loader from '../Loader/page';
@@ -114,7 +115,7 @@ const AddNotePage = () => {
             <input
               id="date"
               type="datetime-local"
-              value={date}
+              value={moment().format('YYYY-MM-DDTHH:mm')}
               onChange={(e) => setDate(e.target.value)}
               required
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
