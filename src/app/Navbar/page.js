@@ -1,12 +1,12 @@
-'use client'
+'use client';
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import axios from 'axios'; // Make sure to import axios
 
 const Navbar = () => {
   const router = useRouter();
-
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const profileImageRef = useRef(null);
@@ -20,7 +20,30 @@ const Navbar = () => {
     router.push('/login');
   };
 
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
+
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get('https://confidentialnotes.onrender.com/api/auth/getuser', {
+        headers: {
+          'Content-Type': 'application/json',
+          'token': localStorage.getItem('token'),
+        },
+      });
+      if (response.data.success) {
+        setUser(response.data.user);
+      } else {
+        setError('Failed to fetch user data.');
+      }
+    } catch (error) {
+      setError('Failed to fetch user data.');
+    }
+  };
+
   useEffect(() => {
+    fetchUser();
+
     const handleClickOutside = (event) => {
       if (
         dropdownRef.current &&
@@ -41,10 +64,15 @@ const Navbar = () => {
     };
   }, []);
 
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+
   return (
-    <nav className="bg-sky-600 p-4 flex  justify-between items-center">
+    <nav className="bg-sky-600 p-4 flex justify-between items-center">
       <Link href="/" className="text-white text-lg font-semibold">
-        Confidential
+      {user?.fName ? capitalizeFirstLetter(user.fName) : 'Loading...'}
       </Link>
 
       <div className="relative">
@@ -55,6 +83,7 @@ const Navbar = () => {
           className="rounded-full border-2 border-white cursor-pointer"
           onClick={toggleDropdown}
           ref={profileImageRef}
+          alt="Profile"
         />
 
         {isDropdownOpen && (
